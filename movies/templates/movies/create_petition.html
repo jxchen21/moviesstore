@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="p-3">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-8 mx-auto">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-plus-circle"></i> Create Movie Petition
+            </h4>
+          </div>
+          <div class="card-body">
+            {% if template_data.error %}
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-triangle"></i> {{ template_data.error }}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="title" class="form-label">
+                  <i class="fas fa-heading"></i> Petition Title *
+                </label>
+                <input type="text" class="form-control" id="title" name="title"
+                       placeholder="e.g., Add The Matrix to our collection" required>
+                <div class="form-text">Give your petition a catchy title that describes what you want.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="movie_title" class="form-label">
+                  <i class="fas fa-film"></i> Movie Title *
+                </label>
+                <input type="text" class="form-control" id="movie_title" name="movie_title"
+                       placeholder="e.g., The Matrix" required>
+                <div class="form-text">The exact title of the movie you want to petition for.</div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="movie_year" class="form-label">
+                      <i class="fas fa-calendar"></i> Release Year
+                    </label>
+                    <input type="number" class="form-control" id="movie_year" name="movie_year"
+                           placeholder="1999" min="1900" max="2030">
+                    <div class="form-text">Optional: The year the movie was released.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="movie_director" class="form-label">
+                      <i class="fas fa-user"></i> Director
+                    </label>
+                    <input type="text" class="form-control" id="movie_director" name="movie_director"
+                           placeholder="e.g., The Wachowskis">
+                    <div class="form-text">Optional: The movie's director(s).</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">
+                  <i class="fas fa-align-left"></i> Description *
+                </label>
+                <textarea class="form-control" id="description" name="description" rows="5"
+                          placeholder="Explain why this movie should be added to our collection. What makes it special? Why would other users want to watch it?" required></textarea>
+                <div class="form-text">Provide a compelling description to convince others to support your petition.</div>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <a href="{% url 'movies.petition_list' %}" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left"></i> Back to Petitions
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i> Create Petition
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Help section -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-lightbulb"></i> Tips for a Great Petition
+            </h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="fas fa-check text-success"></i>
+                <strong>Be specific:</strong> Include the exact movie title and year if possible.
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check text-success"></i>
+                <strong>Explain why:</strong> Tell others why this movie is worth adding to our collection.
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check text-success"></i>
+                <strong>Be respectful:</strong> Keep your description professional and constructive.
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check text-success"></i>
+                <strong>Check for duplicates:</strong> Look through existing petitions to avoid duplicates.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

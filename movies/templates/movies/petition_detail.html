@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="p-3">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-8 mx-auto">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">{{ template_data.petition.title }}</h4>
+              <a href="{% url 'movies.petition_list' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Back to Petitions
+              </a>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Movie Information -->
+            <div class="row mb-4">
+              <div class="col-md-8">
+                <h5 class="text-primary">
+                  <i class="fas fa-film"></i> {{ template_data.petition.movie_title }}
+                  {% if template_data.petition.movie_year %}
+                    ({{ template_data.petition.movie_year }})
+                  {% endif %}
+                </h5>
+                {% if template_data.petition.movie_director %}
+                <p class="text-muted mb-2">
+                  <i class="fas fa-user"></i> Director: {{ template_data.petition.movie_director }}
+                </p>
+                {% endif %}
+              </div>
+              <div class="col-md-4 text-end">
+                <div class="vote-section">
+                  {% if user.is_authenticated %}
+                  <div class="btn-group-vertical" role="group">
+                    <button class="btn btn-outline-success vote-btn"
+                            data-petition-id="{{ template_data.petition.id }}"
+                            data-vote-type="up"
+                            {% if template_data.user_vote.vote_type == 'up' %}disabled{% endif %}>
+                      <i class="fas fa-thumbs-up"></i> {{ template_data.petition.upvotes }}
+                    </button>
+                    <button class="btn btn-outline-danger vote-btn"
+                            data-petition-id="{{ template_data.petition.id }}"
+                            data-vote-type="down"
+                            {% if template_data.user_vote.vote_type == 'down' %}disabled{% endif %}>
+                      <i class="fas fa-thumbs-down"></i> {{ template_data.petition.downvotes }}
+                    </button>
+                  </div>
+                  {% else %}
+                  <div class="text-center">
+                    <div class="mb-2">
+                      <span class="badge bg-success fs-6">
+                        <i class="fas fa-thumbs-up"></i> {{ template_data.petition.upvotes }}
+                      </span>
+                    </div>
+                    <div>
+                      <span class="badge bg-danger fs-6">
+                        <i class="fas fa-thumbs-down"></i> {{ template_data.petition.downvotes }}
+                      </span>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <h6><i class="fas fa-align-left"></i> Description</h6>
+              <p class="card-text">{{ template_data.petition.description|linebreaks }}</p>
+            </div>
+
+            <!-- Petition Info -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <h6 class="card-title">
+                      <i class="fas fa-info-circle"></i> Petition Information
+                    </h6>
+                    <p class="card-text mb-1">
+                      <strong>Created by:</strong> {{ template_data.petition.creator.username }}
+                    </p>
+                    <p class="card-text mb-1">
+                      <strong>Created:</strong> {{ template_data.petition.created_at|date:"F d, Y \a\t g:i A" }}
+                    </p>
+                    <p class="card-text mb-1">
+                      <strong>Last updated:</strong> {{ template_data.petition.updated_at|date:"F d, Y \a\t g:i A" }}
+                    </p>
+                    <p class="card-text mb-0">
+                      <strong>Net votes:</strong>
+                      <span class="badge {% if template_data.petition.net_votes > 0 %}bg-success{% elif template_data.petition.net_votes < 0 %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ template_data.petition.net_votes }}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <h6 class="card-title">
+                      <i class="fas fa-chart-bar"></i> Vote Statistics
+                    </h6>
+                    <p class="card-text mb-1">
+                      <strong>Total votes:</strong> {{ template_data.petition.upvotes|add:template_data.petition.downvotes }}
+                    </p>
+                    <p class="card-text mb-1">
+                      <strong>Upvotes:</strong> {{ template_data.petition.upvotes }}
+                    </p>
+                    <p class="card-text mb-1">
+                      <strong>Downvotes:</strong> {{ template_data.petition.downvotes }}
+                    </p>
+                    {% if template_data.petition.upvotes|add:template_data.petition.downvotes > 0 %}
+                    <p class="card-text mb-0">
+                      <strong>Approval rate:</strong>
+                      {% widthratio template_data.petition.upvotes template_data.petition.upvotes|add:template_data.petition.downvotes 100 %}%
+                    </p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="mt-4 text-center">
+              {% if user.is_authenticated %}
+                {% if template_data.petition.creator == user %}
+                <div class="alert alert-info" role="alert">
+                  <i class="fas fa-info-circle"></i> This is your petition. Share it with others to get more votes!
+                </div>
+                {% endif %}
+                <a href="{% url 'movies.create_petition' %}" class="btn btn-primary">
+                  <i class="fas fa-plus"></i> Create Another Petition
+                </a>
+              {% else %}
+              <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                You need to <a href="{% url 'accounts.login' %}">login</a> to vote on petitions.
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const voteButtons = document.querySelectorAll('.vote-btn');
+
+    voteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const petitionId = this.dataset.petitionId;
+            const voteType = this.dataset.voteType;
+
+            // Disable all vote buttons for this petition
+            const petitionButtons = document.querySelectorAll(`[data-petition-id="${petitionId}"]`);
+            petitionButtons.forEach(btn => btn.disabled = true);
+
+            // Get CSRF token from cookies
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            fetch(`{% url 'movies.vote_petition' 0 %}`.replace('0', petitionId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `vote_type=${voteType}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update vote counts
+                    const upButton = document.querySelector(`[data-petition-id="${petitionId}"][data-vote-type="up"]`);
+                    const downButton = document.querySelector(`[data-petition-id="${petitionId}"][data-vote-type="down"]`);
+
+                    if (upButton) {
+                        upButton.innerHTML = `<i class="fas fa-thumbs-up"></i> ${data.upvotes}`;
+                    }
+                    if (downButton) {
+                        downButton.innerHTML = `<i class="fas fa-thumbs-down"></i> ${data.downvotes}`;
+                    }
+
+                    // Re-enable buttons
+                    petitionButtons.forEach(btn => btn.disabled = false);
+
+                    // Reload page to update statistics
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    alert('Error voting: ' + data.error);
+                    petitionButtons.forEach(btn => btn.disabled = false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while voting');
+                petitionButtons.forEach(btn => btn.disabled = false);
+            });
+        });
+    });
+});
+</script>
+{% endblock content %}

@@ -8,4 +8,8 @@ urlpatterns = [
     path('<int:id>/review/<int:review_id>/delete/', views.delete_review, name='movies.delete_review'),
     path('requests/', views.movie_requests, name='movies.movie_requests'),
     path('requests/<int:request_id>/delete/', views.delete_movie_request, name='movies.delete_movie_request'),
+    path('petitions/', views.petition_list, name='movies.petition_list'),
+    path('petitions/create/', views.create_petition, name='movies.create_petition'),
+    path('petitions/<int:petition_id>/', views.petition_detail, name='movies.petition_detail'),
+    path('petitions/<int:petition_id>/vote/', views.vote_petition, name='movies.vote_petition'),
 ]

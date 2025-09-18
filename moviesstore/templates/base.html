@@ -43,6 +43,8 @@
               "{% url 'movies.index' %}">Movies</a>
             <a class="nav-link"
               href="{% url 'cart.index' %}">Cart</a>
+            <a class="nav-link"
+              href="{% url 'movies.petition_list' %}">Petitions</a>
             {% if user.is_authenticated %}
             <a class="nav-link"
               href="{% url 'movies.movie_requests' %}">Request Movie</a>
